@@ -38,3 +38,18 @@ spec:
                 configMapKeyRef:
                   name: activemq-config
                   key: ACTIVEMQ_CONFIG_DEFAULT_ACCOUNT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: activemq
+spec:
+  ports:
+    - protocol: TCP
+      port: 61616
+      targetPort: tcp
+    - protocol: TCP
+      port: 8161
+      targetPort: admin
+  selector:
+    app: activemq
