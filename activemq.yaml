@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: activemq-config
+data:
+  ACTIVEMQ_CONFIG_NAME: activemq
+  ACTIVEMQ_CONFIG_DEFAULT_ACCOUNT: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activemq
+spec:
+  selector:
+    matchLabels:
+      app: activemq
+  template:
+    metadata:
+      labels:
+        app: activemq
+    spec:
+      containers:
+        - name: activemq
+          image: webcenter/activemq:latest
+          ports:
+            - containerPort: 61616
+              name: tcp
+            - containerPort: 8161
+              name: admin
+          env:
+            - name: ACTIVEMQ_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: activemq-config
+                  key: ACTIVEMQ_CONFIG_NAME
+            - name: ACTIVEMQ_CONFIG_DEFAULT_ACCOUNT
+              valueFrom:
+                configMapKeyRef:
+                  name: activemq-config
+                  key: ACTIVEMQ_CONFIG_DEFAULT_ACCOUNT
